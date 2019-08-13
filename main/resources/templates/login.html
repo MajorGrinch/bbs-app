@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kevin BBS</title>
+    <link th:replace="base::boostrap-css"/>
+</head>
+<div th:include="base::bbs-navbar"></div>
+
+<br>
+<div class="col-md-4 offset-md-4">
+
+    <h1>Login</h1>
+
+    <div th:if="${param.error}">
+        Unable to login. Check your username and password
+    </div>
+
+    <form method="POST" th:action="@{/auth/authenticateUser}" id="loginForm">
+
+        <div class="form-group">
+            <label for="usernameInput">Username</label>
+            <input type="text" name="username" class="form-control" id="usernameInput" placeholder="Username">
+        </div>
+
+        <div class="form-group">
+            <label for="passwordInput">Password</label>
+            <input type="password" name="password" class="form-control" id="passwordInput" placeholder="Password">
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <input type="submit" value="Login" class="btn btn-primary"/>
+            </div>
+            <div class="col-md-6 text-right">
+                <a th:href="@{/auth/registerUser}" class="btn btn-info">Register</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div th:replace="base::boostrap-js"></div>
+</body>
+</html>
