@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Kevin BBS</title>
+    <link th:replace="base::boostrap-css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
+</head>
+<body>
+<div th:include="base::bbs-navbar"></div>
+
+<br>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="card-header text-center">
+            <h3 th:text="${thePost.getTitle()}" class="card-title"></h3>
+        </div>
+
+        <div class="card-body">
+            <p th:text="${thePost.getContent()}" class="card-text"></p>
+        </div>
+
+        <div class="card-footer text-center">
+            <a href="#" class="card-link">Comment</a>
+            <a th:href="@{/}" class="card-link">Back</a>
+        </div>
+    </div>
+
+    <div th:each="comment : ${theComments}">
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${comment.getUser().getUsername()}"></h5>
+                <p th:text="${comment.getContent()}" class="card-text"></p>
+                <span th:text="'commented at ' + ${comment.getCommentTime()}">post info</span>
+            </div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div id="comment_form">
+        <form method="post" th:action="@{/commentpost/} + ${thePost.getId()}">
+            <div class="form-group text-center">
+                <h4 for="comment_content_textarea">Your comment</h4>
+                <textarea class="form-control" id="comment_content_textarea" rows="5" name="content"></textarea>
+            </div>
+            <div class="form-group text-right">
+                <button type="submit" class="btn btn-success" id="submit_comment_btn">Comment</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div th:replace="base::boostrap-js"></div>
+</body>
+</html>

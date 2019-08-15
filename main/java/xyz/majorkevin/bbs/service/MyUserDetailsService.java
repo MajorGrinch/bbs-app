@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import xyz.majorkevin.bbs.entity.MyUserDetail;
 import xyz.majorkevin.bbs.entity.Role;
 import xyz.majorkevin.bbs.entity.User;
 
@@ -20,12 +21,14 @@ public class MyUserDetailsService implements UserDetailsService {
     private UserService userService;
 
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+    public MyUserDetail loadUserByUsername(String name) throws UsernameNotFoundException {
         User user = userService.findByUsername(name);
         if (user == null){
             throw new UsernameNotFoundException("Invalid username or password.");
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+        MyUserDetail myUserDetail = new MyUserDetail();
+        myUserDetail.setUser(user);
+        return myUserDetail;
     }
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kevin BBS</title>
+    <link th:replace="base::boostrap-css"/>
+</head>
+<body>
+<div th:include="base::bbs-navbar"></div>
+
+<br>
+
+<div class="container col-md-4">
+    <form method="post" th:action="@{/profile/manage}" th:object="${updateUserProfileForm}">
+        <div class="form-group">
+            <label for="usernameInput">Username</label>
+            <input type="text"  class="form-control" id="usernameInput" th:field="*{username}"/>
+            <span class="validationError" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="emailInput">Email</label>
+            <input type="email" class="form-control" id="emailInput" th:field="*{email}" />
+            <span class="validationError" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+        </div>
+        <div class="text-right">
+            <input type="submit" value="Update" class="btn btn-primary"/>
+
+        </div>
+    </form>
+</div>
+
+
+<div th:replace="base::boostrap-js"></div>
+</body>
+</html>

@@ -32,7 +32,6 @@ public class AuthControllerTests {
     @Autowired
     private UserService userService;
 
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -46,6 +45,18 @@ public class AuthControllerTests {
     }
 
     @Test
+    public void loginUser() throws Exception{
+        MockHttpServletRequestBuilder postForm = post("/auth/authenticateUser")
+                .param("username", "testExist")
+                .param("password", "1234")
+                .with(csrf());
+
+        mockMvc.perform(postForm)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
     public void showRegisterPage() throws Exception{
         mockMvc.perform(get("/auth/registerUser"))
                 .andExpect(status().isOk())
@@ -55,7 +66,6 @@ public class AuthControllerTests {
 
     @Test
     public void createUser() throws Exception {
-        RegistrationForm form = new RegistrationForm();
         MockHttpServletRequestBuilder postForm = post("/auth/registerUser")
                                                     .param("username", "testNotExist")
                                                     .param("password", "1234")
@@ -68,12 +78,11 @@ public class AuthControllerTests {
                 .andExpect(redirectedUrl("/"));
 
         User user = userService.findByUsername("testNotExist");
-        assertThat(user != null);
+        assertThat(user).isNotEqualTo(null);
     }
 
     @Test
     public void createDuplicatedUser() throws Exception {
-        RegistrationForm form = new RegistrationForm();
         MockHttpServletRequestBuilder postForm = post("/auth/registerUser")
                 .param("username", "testExist")
                 .param("password", "1234")

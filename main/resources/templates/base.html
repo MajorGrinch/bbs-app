@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -23,30 +23,27 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <div th:if="${user} == null">
+                    <div sec:authorize="isAnonymous()">
                         <a class="nav-link" th:href="@{/auth/login}">Login<span class="sr-only">(current)</span></a>
                     </div>
-                    <div th:if="${user} != null">
-                        <a class="nav-link" href="#" th:text="${user}"><span class="sr-only">(current)</span></a>
+                    <div sec:authorize="isAuthenticated()">
+                        <a class="nav-link" href="#" th:text="'Welcome, ' + ${#authentication.getName()}"><span class="sr-only">(current)</span></a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" th:href="@{/post/write}">Make a Post</a>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()" >
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
+                        User Center
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" th:href="@{/post/mine}">My Posts</a>
+                        <a class="dropdown-item" th:href="@{/profile/manage}">Profile</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <a class="dropdown-item" href="#" id="logout_btn">Logout</a>
                     </div>
-                </li>
-                <li class="nav-item" th:if="${user} != null">
-                    <a class="nav-link" href="#" id="logout_btn">Logout</a>
                 </li>
 
             </ul>

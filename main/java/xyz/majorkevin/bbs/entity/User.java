@@ -1,7 +1,6 @@
 package xyz.majorkevin.bbs.entity;
 
 
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,6 +34,12 @@ public class User{
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user"), inverseJoinColumns = @JoinColumn(name = "role"))
     private List<Role> roles;
 
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private List<Comment> comments;
+
     public User() {
     }
 
@@ -43,6 +48,22 @@ public class User{
         this.password = password;
         this.isActive = isActive;
         this.email = email;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public void addPost(Post post){
+        if(posts == null){
+            posts = new ArrayList<>();
+        }
+        posts.add(post);
+        post.setUser(this);
     }
 
     public Long getId() {
@@ -101,8 +122,8 @@ public class User{
         this.roles = roles;
     }
 
-    public void addRole(Role role){
-        if(this.roles == null){
+    public void addRole(Role role) {
+        if (this.roles == null) {
             this.roles = new ArrayList<>();
         }
         this.roles.add(role);

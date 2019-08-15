@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Kevin BBS</title>
+    <link th:replace="base::boostrap-css"/>
+</head>
+<body>
+<div th:include="base::bbs-navbar"></div>
+
+<br>
+
+<div class="container">
+
+    <div th:each="article : ${allMyPosts}">
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><a th:href="@{/checkpost/} + ${article.getId()}"
+                                          th:text="${article.getTitle()}"></a></h5>
+                <p th:text="${article.getContent()} + '...'" class="card-text"></p>
+                <div class="row">
+                    <div class="text-left col-md-10">
+                        <span th:text="'posted By you at ' + ${article.getPostTime()}">post info</span>
+                    </div>
+                    <div class="text-right col-md-2">
+                        <a th:href="@{/post/delete/} + ${article.getId()}" class="card-link">Delete</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div th:replace="base::boostrap-js"></div>
+</body>
+</html>

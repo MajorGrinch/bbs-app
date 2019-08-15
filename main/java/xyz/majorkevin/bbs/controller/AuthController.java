@@ -54,7 +54,7 @@ public class AuthController {
 
         User user = registerForm.toUser(passwordEncoder);
         logger.info("this user: " + user.getUsername());
-//        userService.addBaseRole(user);
+        userService.addBaseRole(user);
         userService.save(user);
         return "redirect:/";
     }
