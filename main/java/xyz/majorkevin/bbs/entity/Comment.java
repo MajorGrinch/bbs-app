@@ -26,7 +26,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "user")
-    private User user;
+    private User createdByUser;
 
     @ManyToOne
     @JoinColumn(name = "post")
@@ -81,19 +81,19 @@ public class Comment {
         this.commentTime = commentTime;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Post getPost() {
         return post;
     }
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public User getCreatedByUser() {
+        return createdByUser;
+    }
+
+    public void setCreatedByUser(User createdByUser) {
+        this.createdByUser = createdByUser;
     }
 }

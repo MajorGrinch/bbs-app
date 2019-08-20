@@ -1,5 +1,7 @@
 package xyz.majorkevin.bbs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +29,7 @@ public class Post {
     @JoinColumn(name = "user")
     private User user;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<Comment> comments;
 

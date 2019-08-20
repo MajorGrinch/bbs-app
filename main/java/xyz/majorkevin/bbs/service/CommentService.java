@@ -8,4 +8,6 @@ public interface CommentService {
     List<Comment> getAllComments();
 
     void save(Comment comment);
+
+    Comment findById(Long id);
 }

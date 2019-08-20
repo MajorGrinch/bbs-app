@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Kevin BBS</title>
+    <meta th:name="${_csrf.parameterName}" th:content="${_csrf.token}"/>
     <link th:replace="base::boostrap-css"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
 </head>
@@ -24,7 +25,6 @@
         </div>
 
         <div class="card-footer text-center">
-            <a href="#" class="card-link">Comment</a>
             <a th:href="@{/}" class="card-link">Back</a>
         </div>
     </div>
@@ -33,9 +33,39 @@
         <br>
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title" th:text="${comment.getUser().getUsername()}"></h5>
-                <p th:text="${comment.getContent()}" class="card-text"></p>
-                <span th:text="'commented at ' + ${comment.getCommentTime()}">post info</span>
+                <div class="comment-container">
+                    <h5 class="card-title" th:text="${comment.getCreatedByUser().getUsername()}"></h5>
+                    <p th:text="${comment.getContent()}" class="card-text"></p>
+                    <span th:text="'commented at ' + ${comment.getCommentTime()}">post info</span>
+                </div>
+                <div class="reply-container" th:id="'reply_container_' + ${comment.getId()}">
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="text-left col-md-6">
+                        <button type="button" class="btn btn-primary" th:text="'Upvote ' + ${comment.getAgreeAmount()}">
+                            Upvote
+                        </button>
+                        <button type="button" class="btn btn-primary"
+                                th:text="'Downvote ' + ${comment.getOpposeAmount()}">Upvote
+                        </button>
+                    </div>
+                    <div class="text-right col-md-6">
+                        <button type="button" class="btn btn-secondary check-reply-btn" th:value="${comment.getId()}">
+                            Check Replies
+                        </button>
+                        <button type="button" class="btn btn-secondary hide-reply-btn" th:value="${comment.getId()}"
+                                style="display: none;">
+                            Hide Replies
+                        </button>
+                        <button type="button" class="btn btn-secondary show-reply-modal-btn"
+                                th:value="${comment.getId()}"
+                                data-toggle="modal" data-target="#exampleModalCenter">Reply
+                        </button>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
@@ -56,6 +86,133 @@
 
 </div>
 
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" id="reply_comment_textarea" rows="5"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="submit_reply_btn">Reply</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="reply_reply_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reply_reply_modal_title">Reply</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" id="reply_reply_textarea" rows="5"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="submit_reply_reply_btn">Reply
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div th:replace="base::boostrap-js"></div>
+<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/js/js.cookie.js}"></script>
+<script>
+
+    var choosed_comment_id = -1;
+
+    var choosed_touser_id = -1;
+
+    $(".check-reply-btn").click(function (data) {
+        console.log("click check reply btn " + this.getAttribute("value"));
+        var commentId = this.getAttribute("value");
+        choosed_comment_id = commentId;
+        $.get("/bbs/reply/comment/" + choosed_comment_id)
+            .done(function (data) {
+                console.log(data);
+                var list_header = '<ul class="list-group">'
+                var list_footer = '</ul>'
+
+                var reply_container = $("#reply_container_" + choosed_comment_id)
+                var reply_list = list_header;
+
+                data.forEach(function (item) {
+                    var item_html = '<li class="list-group-item">';
+                    item_html += '<b>' + item["fromUser"]["username"] + '</b> reply to <b>' + item["toUser"]["username"] + '</b><br>'
+                    item_html += item['content'] + '<br>';
+                    item_html += '<button type="button" class="btn btn-light" val="' + item["id"] + '" data-toggle="modal" data-target="#reply_reply_modal" onclick="set_touser_id(' + item["fromUser"]["id"] + ')">Reply</button>';
+                    item_html += '</li>';
+                    reply_list += item_html;
+                });
+                reply_list += list_footer;
+                reply_container.append(reply_list);
+            })
+        $(this).hide();
+        $(this).next().show();
+        console.log($(this).next());
+    });
+
+    $(".hide-reply-btn").click(function () {
+        var reply_container = $("#reply_container_" + choosed_comment_id);
+        reply_container.empty();
+        $(this).hide();
+        $(this).prev().show();
+    });
+
+    $(".show-reply-modal-btn").click(function () {
+        console.log("click show reply modal btn and comment id is " + this.getAttribute("value"));
+        var commentId = this.getAttribute("value");
+        choosed_comment_id = commentId;
+    });
+
+    $("#submit_reply_btn").click(function () {
+        console.log("submit your reply to comment " + choosed_comment_id);
+        var reply_content = $("#reply_comment_textarea").val();
+        console.log(reply_content);
+        var csrf_token = $("meta[name='_csrf']").attr("content");
+        $.ajax({
+            type: "POST",
+            url: "/bbs/reply/comment/",
+            headers: {"X-CSRF-TOKEN": csrf_token},
+            data: JSON.stringify({"replyContent": reply_content, "commentId": choosed_comment_id}),
+            contentType: "application/json"
+        }).done(function (data) {
+            console.log(data);
+        })
+    });
+
+    $("#submit_reply_reply_btn").click(function () {
+        console.log("submit your reply to reply " + choosed_touser_id);
+        var reply_content = $("#reply_reply_textarea").val();
+        var csrf_token = $("meta[name='_csrf']").attr("content");
+        $.ajax({
+            type: "POST",
+            url: "/bbs/reply/reply/",
+            headers: {"X-CSRF-TOKEN": csrf_token},
+            data: JSON.stringify({"replyContent": reply_content, "commentId": choosed_comment_id, 'toUserId': choosed_touser_id}),
+            contentType: "application/json"
+        })
+    });
+
+    function  set_touser_id(userid) {
+        choosed_touser_id = userid;
+    }
+
+</script>
 </body>
 </html>

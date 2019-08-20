@@ -36,7 +36,7 @@ public class CommentPostController {
         User user = userDetail.getUser();
         Comment theComment = commentForm.toComment(0, 0);
         theComment.setCommentTime(new Date());
-        theComment.setUser(user);
+        theComment.setCreatedByUser(user);
         theComment.setPost(postService.findById(postId));
 
         commentService.save(theComment);

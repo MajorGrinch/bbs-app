@@ -7,6 +7,7 @@ import xyz.majorkevin.bbs.entity.Comment;
 import xyz.majorkevin.bbs.service.CommentService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -22,5 +23,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void save(Comment comment) {
         commentRepository.save(comment);
+    }
+
+    @Override
+    public Comment findById(Long id) {
+        Optional<Comment> result = commentRepository.findById(id);
+        if(result.isPresent()){
+            return result.get();
+        }
+        return null;
     }
 }
