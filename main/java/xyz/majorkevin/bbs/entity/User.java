@@ -35,6 +35,10 @@ public class User{
     private Date lastLogin;
 
     @JsonIgnore
+    @Column(name = "vote_data_id")
+    private String voteDataId;
+
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user"), inverseJoinColumns = @JoinColumn(name = "role"))
     private List<Role> roles;
@@ -46,6 +50,7 @@ public class User{
     @JsonIgnore
     @OneToMany(mappedBy = "createdByUser", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<Comment> comments;
+
 
     public User() {
     }
@@ -119,6 +124,14 @@ public class User{
 
     public void setLastLogin(Date lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    public String getVoteDataId() {
+        return voteDataId;
+    }
+
+    public void setVoteDataId(String voteDataId) {
+        this.voteDataId = voteDataId;
     }
 
     public List<Role> getRoles() {

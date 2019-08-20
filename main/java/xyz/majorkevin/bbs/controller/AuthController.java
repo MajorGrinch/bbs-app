@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import xyz.majorkevin.bbs.entity.User;
 import xyz.majorkevin.bbs.form.RegistrationForm;
 import xyz.majorkevin.bbs.service.UserService;
+import xyz.majorkevin.bbs.service.VoteService;
 
 import javax.validation.Valid;
 
@@ -26,10 +27,13 @@ public class AuthController {
 
     private PasswordEncoder passwordEncoder;
 
+    private VoteService voteService;
+
     @Autowired
-    public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder, VoteService voteService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.voteService = voteService;
     }
 
     @GetMapping("/registerUser")
@@ -55,6 +59,8 @@ public class AuthController {
         User user = registerForm.toUser(passwordEncoder);
         logger.info("this user: " + user.getUsername());
         userService.addBaseRole(user);
+        String userVoteId = voteService.insertUserVoteData(user.getUsername());
+        user.setVoteDataId(userVoteId);
         userService.save(user);
         return "redirect:/";
     }

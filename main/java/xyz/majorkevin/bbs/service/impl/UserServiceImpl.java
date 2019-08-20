@@ -1,14 +1,13 @@
 package xyz.majorkevin.bbs.service.impl;
 
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import xyz.majorkevin.bbs.dao.RoleRepository;
 import xyz.majorkevin.bbs.dao.UserRepository;
 import xyz.majorkevin.bbs.entity.Role;
 import xyz.majorkevin.bbs.entity.User;
 import xyz.majorkevin.bbs.service.UserService;
+import xyz.majorkevin.bbs.service.VoteService;
 
 import java.util.Optional;
 
@@ -19,11 +18,14 @@ public class UserServiceImpl implements UserService {
 
     private RoleRepository roleRepository;
 
+    private VoteService voteService;
+
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, VoteService voteService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.voteService = voteService;
     }
 
     @Override
