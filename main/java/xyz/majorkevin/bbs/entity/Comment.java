@@ -16,10 +16,10 @@ public class Comment {
     private String content;
 
     @Column(name = "agree_amount")
-    private int agreeAmount;
+    private Integer agreeAmount;
 
     @Column(name = "oppose_amount")
-    private int opposeAmount;
+    private Integer opposeAmount;
 
     @Column(name = "comment_time")
     private Date commentTime;
@@ -57,7 +57,7 @@ public class Comment {
         this.content = content;
     }
 
-    public int getAgreeAmount() {
+    public Integer getAgreeAmount() {
         return agreeAmount;
     }
 
@@ -65,7 +65,7 @@ public class Comment {
         this.agreeAmount = agreeAmount;
     }
 
-    public int getOpposeAmount() {
+    public Integer getOpposeAmount() {
         return opposeAmount;
     }
 

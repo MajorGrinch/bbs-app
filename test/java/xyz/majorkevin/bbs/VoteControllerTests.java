@@ -47,7 +47,7 @@ public class VoteControllerTests {
     private static final Logger logger = LoggerFactory.getLogger(VoteControllerTests.class);
 
     @Test
-    @WithUserDetails("xiaomaomi")
+    @WithUserDetails("testAccount")
     public void testVoteComment() throws Exception{
         VoteComment voteComment = new VoteComment();
         voteComment.setActionCode(1);
@@ -60,7 +60,7 @@ public class VoteControllerTests {
         mockMvc.perform(upvoteComment)
                 .andExpect(status().isOk());
 
-        UserVote userVote = mongoOperations.findOne(query(where("username").is("xiaomaomi")), UserVote.class);
+        UserVote userVote = mongoOperations.findOne(query(where("username").is("testAccount")), UserVote.class);
         assertThat(userVote).isNotNull();
         List<Long> upvotes = Arrays.asList(userVote.getUpvotes());
         assertThat(upvotes.contains((long)7)).isTrue();

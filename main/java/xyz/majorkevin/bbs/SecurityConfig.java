@@ -54,7 +54,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/post/**").authenticated()
                 .antMatchers("/profile/**").authenticated()
                 .antMatchers("/commentpost/**").authenticated()
-                .antMatchers("/replycomment/**").authenticated()
                 .antMatchers("/", "/**").permitAll()
                 .and()
                 .formLogin().loginPage("/auth/login").loginProcessingUrl("/auth/authenticateUser").permitAll()

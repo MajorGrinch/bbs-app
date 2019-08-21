@@ -45,7 +45,8 @@
                 <div class="row">
                     <div class="text-left col-md-6">
                         <button type="button" class="btn btn-primary upvote-btn"
-                                th:text="'Upvote ' + ${comment.getAgreeAmount()}" th:value="${comment.getId()}">
+                                th:text="'Upvote ' + ${comment.getAgreeAmount()}" th:value="${comment.getId()}"
+                                th:disabled="${#arrays.contains(userVoteData.getUpvotes(), comment.getId())}">
                             Upvote
                         </button>
                         <button type="button" class="btn btn-primary downvote-btn"
@@ -224,6 +225,7 @@
     $(".upvote-btn").click(function () {
         var commentId = this.getAttribute("value");
         console.log("You clicked the upvote button on comment id " + commentId);
+        var thisBtn = this;
 
         $.ajax({
             type: "POST",
@@ -233,13 +235,25 @@
                 "commentId": commentId,
                 "actionCode": 1
             }),
-            contentType: "application/json"
-        })
+            contentType: "application/json",
+            statusCode:{
+                403: function (data) {
+                    if(data['responseJSON']['message'] === 'Auth failed'){
+                        alert("You need to Login to vote");
+                    }
+                }
+            }
+        }).done(function (data) {
+            console.log(data);
+            thisBtn.innerHTML = "Upvote " + data["agreeAmount"];
+            $(thisBtn).prop("disabled", true);
+        });
     });
 
     $(".downvote-btn").click(function () {
         var commentId = this.getAttribute("value");
         console.log("You clicked the downvote button on comment id " + commentId);
+        var thisBtn = this;
         $.ajax({
             type: "POST",
             url: "/bbs/vote/",
@@ -248,8 +262,19 @@
                 "commentId": commentId,
                 "actionCode": 2
             }),
+            statusCode:{
+                403: function (data) {
+                    if(data['responseJSON']['message'] === 'Auth failed'){
+                        alert("You need to Login to vote");
+                    }
+                }
+            },
             contentType: "application/json"
-        })
+        }).done(function (data) {
+            console.log(data);
+            thisBtn.innerHTML = "Downvote " + data["opposeAmount"];
+            $(thisBtn).prop("disabled", true);
+        });
     });
 
 </script>
