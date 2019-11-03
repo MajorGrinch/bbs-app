@@ -50,7 +50,8 @@
                             Upvote
                         </button>
                         <button type="button" class="btn btn-primary downvote-btn"
-                                th:text="'Downvote ' + ${comment.getOpposeAmount()}" th:value="${comment.getId()}">
+                                th:text="'Downvote ' + ${comment.getOpposeAmount()}" th:value="${comment.getId()}"
+                                th:disabled="${#arrays.contains(userVoteData.getDownvotes(), comment.getId())}">
                             Downvote
                         </button>
                     </div>

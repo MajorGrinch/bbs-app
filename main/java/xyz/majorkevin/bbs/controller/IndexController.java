@@ -17,6 +17,9 @@ import xyz.majorkevin.bbs.service.VoteService;
 
 import java.util.List;
 
+/**
+ * index page controller
+ */
 @Controller
 public class IndexController {
 
@@ -40,9 +43,13 @@ public class IndexController {
     public String getThePost(@PathVariable("postId") Long postId, Model model, @AuthenticationPrincipal MyUserDetail myUserDetail){
         Post thePost = postService.findById(postId);
         List<Comment> thePostComments = thePost.getComments();
-        UserVote userVote = new UserVote("Guest", new Long[0], new Long[0]);
+        UserVote userVote = null;
         if(myUserDetail != null){
             userVote = voteService.getUserVoteData(myUserDetail.getUser());
+        }
+        if(userVote == null){
+            // user doesn't have vote data, then make it default
+            userVote = new UserVote("Guest", new Long[0], new Long[0]);
         }
 
         model.addAttribute("thePost", thePost);

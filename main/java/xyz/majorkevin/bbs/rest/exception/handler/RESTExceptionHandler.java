@@ -4,15 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import xyz.majorkevin.bbs.entity.Reply;
 import xyz.majorkevin.bbs.rest.entity.GeneralErrorResponse;
-import xyz.majorkevin.bbs.rest.exception.CommentNotFoundException;
-import xyz.majorkevin.bbs.rest.exception.ReplyFormException;
-import xyz.majorkevin.bbs.rest.exception.UserNotFoundException;
-import xyz.majorkevin.bbs.rest.exception.VoteException;
+import xyz.majorkevin.bbs.rest.exception.*;
 
 @ControllerAdvice
-public class BBSExceptionHandler {
+public class RESTExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<GeneralErrorResponse> handleException(UserNotFoundException exception) {
@@ -41,4 +37,5 @@ public class BBSExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+
 }
